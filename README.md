@@ -1,43 +1,66 @@
-# Smart CCTV 👁️
+# Night-Time CCTV Human Detection System
 
-Smart CCTV is a simple surveillance system that detects people and sends alerts to users during nighttime. The system is designed to improve security by identifying human presence and notifying users when motion or people are detected in low-light conditions.
+A lightweight, automated system to detect humans in your CCTV feed during the night and send image alerts to Telegram.
 
----
+## Features
+- **Real-time Human Detection**: Uses YOLOv8 (Nano) for fast and accurate detection.
+- **Night Vision Enhancement**: Applies CLAHE (Contrast Limited Adaptive Histogram Equalization) to improve detection in dark/IR footage.
+- **Instant Alerts**: Sends a photo to your Telegram immediately upon detection.
+- **Smart Cooldown**: Prevents spamming by waiting 30 seconds between alerts.
+- **Serverless Friendly**: Can run on Google Colab, a free VPS, or any local PC.
 
-## 📌 About the Project
+## Prerequisites
+1.  **Python 3.8+**
+2.  **RTSP Stream Access**:
+    *   If running **locally** (same network as camera): Use the local IP (e.g., `192.168.18.88`).
+    *   If running **cloud/remote** (Colab, VPS): You MUST enable **Port Forwarding** on your router for port 554 (RTSP) to your camera's IP. Your URL will look like `rtsp://user:pass@YOUR_PUBLIC_IP:554/...`.
 
-Smart CCTV uses computer vision to detect people in camera footage, especially during night hours. When a person is detected, the system triggers an alert to inform the user in real time.
+## Setup Instructions
 
-The main goal is to provide a smart and automated security solution that helps monitor areas without constant human supervision.
+### 1. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
 
----
+### 2. Configure the System
+Open `config.py` and update the following:
 
-## 🔑 Key Features
+-   **RTSP_URL**: Your camera's stream URL.
+    -   Hikvision Default: `rtsp://admin:password@IP:554/ISAPI/Streaming/Channels/101`
+-   **TELEGRAM_BOT_TOKEN**:
+    1.  Open Telegram and search for **@BotFather**.
+    2.  Send `/newbot` and follow instructions to get a Token.
+    3.  Paste the token in `config.py`.
+-   **TELEGRAM_CHAT_ID**:
+    1.  Search for **@userinfobot** in Telegram.
+    2.  Click Start to get your numeric ID (e.g., 123456789).
+    3.  Paste it in `config.py`.
 
-- Detects people using camera feed  
-- Works during nighttime / low-light conditions  
-- Sends alerts when a person is detected  
-- Helps improve home and area security  
+### 3. Run the System
+```bash
+python main.py
+```
 
----
+## Running on Google Colab (Free Cloud)
+1.  Upload all files (`main.py`, `detection.py`, `notifier.py`, `config.py`, `requirements.txt`) to your Google Drive.
+2.  Open a new Colab Notebook.
+3.  Mount Drive:
+    ```python
+    from google.colab import drive
+    drive.mount('/content/drive')
+    %cd /content/drive/MyDrive/path_to_your_folder
+    ```
+4.  Install & Run:
+    ```python
+    !pip install -r requirements.txt
+    !python main.py
+    ```
+    *Note: Colab sessions time out. For 24/7, use a Cheap VPS (e.g., Oracle Cloud Free Tier).*
 
-## 🎯 Objective
+## Troubleshooting
+-   **"Failed to open stream"**:
+    -   Check if the IP is correct.
+    -   If remote, check if Port Forwarding is active (test with VLC Media Player on your phone using 4G).
+-   **"Error loading model"**:
+    -   Ensure you have internet connection for the first run to download `yolov8n.pt`.
 
-- Enhance security during night hours  
-- Reduce need for manual monitoring  
-- Provide real-time alerts for suspicious activity  
-
----
-
-## 🛠 Tech Stack (Example)
-
-- Camera Module / IP Camera  
-- Computer Vision (OpenCV / AI Model)  
-- Python  
-- Notification System (Email / App / SMS)  
-
----
-
-## 📄 License
-
-This project is for educational and experimental purposes.
